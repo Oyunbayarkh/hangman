@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Welcome HangMan</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body style="text-align: center;">
+	<div class="wrapper">
+		<h1>Hangman <span class="bang">!</span></h1>
+		<p> Чи бэлэн үү? Амжилт хүсье :)</p>
+	</div>
+	<div class="wrapper">
+		<div id="buttons"></div>
+		<b><p id="catagoryName"></p></b>
+		<div id="hold"></div>
+		<p id="mylives"></p>
+
+    <div class="game">
+      <img id='hangmanPic' src="./images/00.png" alt="" width="20%" >
+    </div>
+		<div class="container">
+			<a href="hangman.html"><button id="reset">Play again</button></a>
+		</div>
+	</div>
+	
+	<script>
+		window.onload = function () {
+
+  var alphabet = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж',
+        'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'ө', 'п', 'р',
+        'с', 'т',"х", 'у', 'ү', 'ф', 'х', 'ц',"ч", "ш", "ъ", "ь", "ы", "э", "ю", "я"];
+  
+  var categories; 
+  var category;  
+  var getHint ; 
+  var word ;  
+  var guess ; 
+  var geusses = [ ]; 
+  var lives ;
+  var counter ;
+  var space;           
+
+  var showLives = document.getElementById("mylives");
+  var showCatagory = document.getElementById("scatagory");
+  var getHint = document.getElementById("hint");
+
+
+
+
+  // useg
+  var buttons = function () {
+    myButtons = document.getElementById('buttons');
+    letters = document.createElement('ul');
+
+    for (var i = 0; i < alphabet.length; i++) {
+      letters.id = 'alphabet';
+      list = document.createElement('li');
+      list.id = 'letter';
+      list.innerHTML = alphabet[i];
+      check();
+      myButtons.appendChild(letters);
+      letters.appendChild(list);
+    }
+  }
+    var display = document.getElementById("catagoryName");
+var category = [
+                ['Дэлхийн хэдэн хувийг ус эзэлдэг вэ?'],
+                ['Монгол улсын төв цэг?'],
+                ['Дэлхийн хамгийн жижиг хот улс?'],
+                ['Да хүрээг 1911 оноос эхлэн юу гэж нэрлэх болсон бэ?'],
+                ['Дэлхий дээр 400 жил бороо ороогүй цөл?']
+                ];
+
+var selectCat = function () {
+    if (category === categories[0]) {
+      catagoryName.innerHTML = "Дэлхийн хэдэн хувийг ус эзэлдэг вэ?";
+    } else if (category === categories[1]) {
+      catagoryName.innerHTML = "Монгол улсын төв цэг?";
+    } else if (category === categories[2]) {
+      catagoryName.innerHTML = "Дэлхийн хамгийн жижиг хот улс?";
+    }else if (category === categories[3]) {
+      catagoryName.innerHTML = "Да хүрээг 1911 оноос эхлэн юу гэж нэрлэх болсон бэ?";
+    }else if (category === categories[4]) {
+      catagoryName.innerHTML = "Дэлхий дээр 400 жил бороо ороогүй цөл?";
+    }
+  }
+
+
+var categoryTracker = [];
+var categoryAmount = 1;
+
+// Iterate however many times
+for (var i = 0; i < categoryAmount; i++) {
+  // Keep creating random numbers until the number is unique
+  do {
+    var randomCategory = Math.floor(Math.random() * category.length);
+  } while (existingCategory());
+
+  display.innerHTML += category[randomCategory] + '<br>';
+  // Add the question to the tracker
+  categoryTracker.push(randomCategory);
+}
+
+// If the current random number already exists in the tracker, return true
+function existingCategory() {
+  for (var i = 0; i < categoryTracker.length; i++) {
+    if (categoryTracker[i] === randomCategory) {
+      return true;
+    }
+  }
+  return false;
+}
+
+  // bair
+   result = function () {
+    wordHolder = document.getElementById('hold');
+    correct = document.createElement('ul');
+
+    for (var i = 0; i < word.length; i++) {
+      correct.setAttribute('id', 'my-word');
+      guess = document.createElement('li');
+      guess.setAttribute('class', 'guess');
+      if (word[i] === "-") {
+        guess.innerHTML = "-";
+        space = 1;
+      } else {
+        guess.innerHTML = "_";
+      }
+
+      geusses.push(guess);
+      wordHolder.appendChild(correct);
+      correct.appendChild(guess);
+    }
+  }
+  
+  // score
+   comments = function () {
+    showLives.innerHTML = "Чиний амь:" + "&nbsp;"+lives;
+    if (lives < 0) {
+      alert("Oops, you lose!");
+      document.location.reload();
+    }
+    for (var i = 0; i < geusses.length; i++) {
+      if (counter + space === geusses.length) {
+       mylives.innerHTML="Баяр хүргье, Та чадлаа "
+      }
+    }
+  }
+
+
+
+
+   check = function () {
+    list.onclick = function () {
+      var geuss = (this.innerHTML);
+      this.setAttribute("class", "active");
+      this.onclick = null;
+      for (var i = 0; i < word.length; i++) {
+        if (word[i] === geuss) {
+          geusses[i].innerHTML = geuss;
+          counter += 1;
+        } 
+      }
+      var j = (word.indexOf(geuss));
+      if (j === -1) {
+        lives -= 1;
+        comments();
+        updatePicture();
+      } else {
+        comments();
+      }
+    }
+  }
+  
+function updatePicture() {
+  document.getElementById('hangmanPic').src = './images/' + lives + '.png';
+}
+
+
+  play = function () {
+    categories = [
+        ["дал"],
+        ["өвөрхангай"],
+        ["ватикан"],
+        ["нийслэл хүрээ"],
+        ["чилийн алтаким"]
+    ];
+
+    category = categories[Math.floor(Math.random() * categories.length)];
+    word = category[Math.floor(Math.random() * category.length)];
+    word = word.replace(/\s/g, "-");
+    console.log(word);
+    buttons();
+
+    geusses = [ ];
+    lives = 5;
+    counter = 0;
+    space = 0;
+    result();
+    comments();
+    selectCat();
+    game();
+  }
+
+  play();
+
+
+  document.getElementById('reset').onclick = function() {
+    correct.parentNode.removeChild(correct);
+    letters.parentNode.removeChild(letters);
+    play();
+  }
+}
+
+	</script>
+</body>
+</html>
